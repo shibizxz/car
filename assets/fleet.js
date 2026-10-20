@@ -94,7 +94,7 @@ function renderCategoryCards() {
   const categoryGrid = document.getElementById("categoryGrid");
   categoryGrid.innerHTML = Object.entries(categoryMeta)
     .map(([key, meta]) => `
-      <article class="category-card" style="background-image: url('${meta.image}'); background-size: cover; background-position: center;" data-category="${key}">
+      <article role="button" tabindex="0" aria-label="Explore ${meta.title} vehicles" class="category-card" style="background-image: url('${meta.image}'); background-size: cover; background-position: center;" data-category="${key}">
         <div class="category-card-content">
           <span class="soft-tag">${Object.keys(carData[key]).length} collections</span>
           <h3 class="mt-3 mb-2">${meta.title}</h3>
@@ -106,6 +106,7 @@ function renderCategoryCards() {
 
   categoryGrid.querySelectorAll("[data-category]").forEach((card) => {
     card.addEventListener("click", () => showCategory(card.dataset.category));
+    card.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); showCategory(card.dataset.category); } });
   });
 }
 
@@ -173,7 +174,7 @@ function renderImageTiles(images) {
   galleryGrid.innerHTML = images
     .map((src) => `
       <article class="gallery-tile">
-        <img src="${src}" alt="Car Castle vehicle">
+        <img src="${src}" alt="${formatLabel(state.brand || state.category)} — Car Castle vehicle" loading="lazy" tabindex="0" role="button" aria-label="Enlarge vehicle photograph">
       </article>
     `)
     .join("");
@@ -182,6 +183,7 @@ function renderImageTiles(images) {
 function setGalleryTitle(title, subtitle) {
   document.getElementById("galleryTitle").textContent = title;
   document.getElementById("gallerySubtitle").textContent = subtitle;
+  document.getElementById("galleryTitle").focus({preventScroll: true});
 }
 
 function goBack() {
@@ -201,6 +203,7 @@ function goBack() {
   state.category = null;
   state.brand = null;
   state.view = "categories";
+  document.querySelector("[data-category]")?.focus({preventScroll: true});
 }
 
 function toggleGallery(show) {
