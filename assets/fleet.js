@@ -188,7 +188,7 @@ function renderImageTiles(images, vehicleName) {
     const name = state.category === "bus" ? (src.endsWith("/Urbania.jpg") ? "Urbania" : "Bus") : vehicleName;
     return `<article class="gallery-tile">
       <img src="${src}" alt="${escapeHtml(name)} — Car Castle vehicle" loading="lazy" tabindex="0" role="button" aria-label="Enlarge ${escapeHtml(name)} photograph">
-      <div class="vehicle-caption"><h3>${escapeHtml(name)}</h3>${vehicleEnquiry(name)}</div>
+      <div class="vehicle-caption"><h3>${escapeHtml(name)}</h3></div>
     </article>`;
   }).join("");
   const enquiry = document.querySelector(".gallery-enquiry");
