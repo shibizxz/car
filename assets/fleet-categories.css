@@ -1,0 +1,16 @@
+/* Fleet category grid: 2 + 2 + 1 centered at every width. */
+body[data-page="fleet"] #categoryGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:26px;max-width:1000px;margin:0 auto}
+body[data-page="fleet"] #categoryGrid>.category-card,body[data-page="fleet"] #categoryGrid>.category-card:nth-child(-n+2){grid-column:span 2;min-height:310px;min-width:0;border-radius:9px}
+body[data-page="fleet"] #categoryGrid>.category-card:last-child{grid-column:2/span 2}
+@media(max-width:620px){
+body[data-page="fleet"] #categoryGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 14px}
+body[data-page="fleet"] #categoryGrid>.category-card,body[data-page="fleet"] #categoryGrid>.category-card:nth-child(-n+2){grid-column:span 2;min-height:240px;aspect-ratio:auto;border-radius:8px}
+body[data-page="fleet"] #categoryGrid>.category-card:last-child{grid-column:2/span 2}
+body[data-page="fleet"] #categoryGrid .category-card-content{padding:14px 12px}
+body[data-page="fleet"] #categoryGrid .category-card-content h3{font-size:23px;line-height:1.15;letter-spacing:-.6px;margin:10px 0 8px}
+body[data-page="fleet"] #categoryGrid .category-card-content p{font-size:10px;line-height:1.5;color:#e5eadf}
+body[data-page="fleet"] #categoryGrid .soft-tag{font-size:8px;padding:4px 7px;line-height:1.4}
+body[data-page="fleet"] #categoryGrid .category-card:after{top:10px;right:10px;width:28px;height:28px;background-size:14px 14px}
+body[data-page="fleet"] #categoryGrid .category-card:before{background:linear-gradient(180deg,#112d2210 5%,#112d2290 40%,#112d22f5 100%)}
+}
+@media(max-width:359px){body[data-page="fleet"] #categoryGrid{gap:14px 10px}body[data-page="fleet"] #categoryGrid .category-card-content{padding:12px 10px}body[data-page="fleet"] #categoryGrid .category-card-content h3{font-size:21px}}

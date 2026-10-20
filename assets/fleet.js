@@ -89,7 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function formatLabel(value) {
-  return value.replaceAll("_", " ");
+  const labels = {HondaCity: "Honda City", VolkswagenVirtus: "Volkswagen Virtus", jaguarXF: "Jaguar XF", Luxus: "Lexus", Mercedes_Benz_Sclass: "Mercedes Benz S-Class"};
+  return labels[value] || value.replaceAll("_", " ");
 }
 
 function renderCategoryCards() {
@@ -128,6 +129,7 @@ function renderBrands(brands) {
     .map((brand) => `
       <article class="gallery-tile">
         <button type="button" data-brand="${escapeHtml(brand)}">${formatLabel(brand)}</button>
+        ${Array.isArray(brands[brand]) ? vehicleEnquiry(formatLabel(brand)) : ""}
       </article>
     `)
     .join("");
@@ -144,7 +146,7 @@ function showImages(brand) {
   if (Array.isArray(data)) {
     state.view = "images";
     setGalleryTitle(formatLabel(brand), "Browse real vehicles available from this collection.");
-    renderImageTiles(data.map((image) => `images/${state.category}/${brand}/${image}`));
+    renderImageTiles(data.map((image) => `images/${state.category}/${brand}/${image}`), formatLabel(brand));
     return;
   }
 
@@ -156,6 +158,7 @@ function showImages(brand) {
     .map((series) => `
       <article class="gallery-tile">
         <button type="button" class="series-button" data-series="${escapeHtml(series)}">${formatLabel(series)}</button>
+        ${vehicleEnquiry(`${formatLabel(state.brand)} ${formatLabel(series)}`)}
       </article>
     `)
     .join("");
@@ -168,21 +171,38 @@ function showImages(brand) {
 function showSeries(series) {
   state.view = "series-images";
   setGalleryTitle(formatLabel(series), `Inside ${formatLabel(state.brand)} collection.`);
-  renderImageTiles(carData[state.category][state.brand][series].map((image) => `images/${state.category}/${state.brand}/${series}/${image}`));
+  renderImageTiles(carData[state.category][state.brand][series].map((image) => `images/${state.category}/${state.brand}/${series}/${image}`), `${formatLabel(state.brand)} ${formatLabel(series)}`);
 }
 
-function renderImageTiles(images) {
+function vehicleWhatsAppUrl(name) {
+  return "https://wa.me/919747330992?text=" + encodeURIComponent(`Hello Car Castle Chengannur! I would like to enquire about the ${name}. Please share availability and pricing.`);
+}
+
+function vehicleEnquiry(name) {
+  return `<a class="vehicle-enquiry" href="${vehicleWhatsAppUrl(name)}" target="_blank" rel="noopener noreferrer" aria-label="Enquire about ${escapeHtml(name)} on WhatsApp"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.2 8L3 21l1.5-4.8A9 9 0 1 1 21 11.5Z"/><path d="M8 7c0 4 2 6 6 7l2-2-3-1-1 1-2-2 1-1-1-2H8Z" stroke-linejoin="round"/></svg><span>Enquire on WhatsApp</span></a>`;
+}
+
+function renderImageTiles(images, vehicleName) {
   const galleryGrid = document.getElementById("galleryGrid");
-  galleryGrid.innerHTML = images
-    .map((src) => `
-      <article class="gallery-tile">
-        <img src="${src}" alt="${formatLabel(state.brand || state.category)} — Car Castle vehicle" loading="lazy" tabindex="0" role="button" aria-label="Enlarge vehicle photograph">
-      </article>
-    `)
-    .join("");
+  galleryGrid.innerHTML = images.map((src) => {
+    const name = state.category === "bus" ? (src.endsWith("/Urbania.jpg") ? "Urbania" : "Bus") : vehicleName;
+    return `<article class="gallery-tile">
+      <img src="${src}" alt="${escapeHtml(name)} — Car Castle vehicle" loading="lazy" tabindex="0" role="button" aria-label="Enlarge ${escapeHtml(name)} photograph">
+      <div class="vehicle-caption"><h3>${escapeHtml(name)}</h3>${vehicleEnquiry(name)}</div>
+    </article>`;
+  }).join("");
+  const enquiry = document.querySelector(".gallery-enquiry");
+  if (enquiry) {
+    enquiry.href = vehicleWhatsAppUrl(vehicleName);
+    enquiry.target = "_blank";
+    enquiry.rel = "noopener noreferrer";
+    enquiry.textContent = `Enquire about ${vehicleName}`;
+  }
 }
 
 function setGalleryTitle(title, subtitle) {
+  const enquiry = document.querySelector(".gallery-enquiry");
+  if (enquiry) { enquiry.href = "contact.html"; enquiry.removeAttribute("target"); enquiry.removeAttribute("rel"); enquiry.textContent = "Enquire about this collection"; }
   document.getElementById("galleryTitle").textContent = title;
   document.getElementById("gallerySubtitle").textContent = subtitle;
   document.getElementById("galleryTitle").focus({preventScroll: true});
