@@ -252,8 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
       <input id="customer-name" name="customerName" autocomplete="name" maxlength="100" required placeholder="Full name">
       <label for="customer-phone">Phone number <span>(required)</span></label>
       <input id="customer-phone" name="customerPhone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" required placeholder="Your contact number">
-      <label for="customer-email">Email address <span>(optional)</span></label>
-      <input id="customer-email" name="customerEmail" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com">
       <p class="enquiry-privacy">Your details, vehicle and category will be included in a WhatsApp message. You can review it before sending.</p>
       <button class="button dark enquiry-continue" type="submit">Continue to WhatsApp</button>
     </form>`;
@@ -290,11 +288,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const digits = phone.replace(/\D/g, "");
     phoneInput.setCustomValidity(/^[+0-9() .-]+$/.test(phone) && digits.length >= 7 && digits.length <= 15 ? "" : "Please enter a valid phone number with 7 to 15 digits.");
     if (!form.reportValidity()) return;
-    const message = buildCustomerEnquiry(selectedVehicle, selectedCategory, nameInput.value.trim(), phone, form.elements.customerEmail.value.trim());
+    const message = buildCustomerEnquiry(selectedVehicle, selectedCategory, nameInput.value.trim(), phone);
     window.open("https://wa.me/919747330992?text=" + encodeURIComponent(message), "_blank", "noopener,noreferrer");
   });
 });
 
-function buildCustomerEnquiry(vehicle, category, name, phone, email) {
-  return ["Hello Car Castle Chengannur! I would like to enquire about this vehicle.", `Vehicle: ${vehicle}`, `Category: ${category}`, `Customer name: ${name}`, `Phone: ${phone}`, ...(email ? [`Email: ${email}`] : []), "Please share availability and pricing."].join("\n");
+function buildCustomerEnquiry(vehicle, category, name, phone) {
+  return ["Hello Car Castle Chengannur! I would like to enquire about this vehicle.", `Vehicle: ${vehicle}`, `Category: ${category}`, `Customer name: ${name}`, `Phone: ${phone}`, "Please share availability and pricing."].join("\n");
 }
