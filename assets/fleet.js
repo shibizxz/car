@@ -83,6 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   renderCategoryCards();
+  const requestedCategory = new URLSearchParams(window.location.search).get("category");
+  if (requestedCategory && Object.hasOwn(categoryMeta, requestedCategory)) showCategory(requestedCategory);
   document.getElementById("backButton").addEventListener("click", goBack);
 });
 
