@@ -11,3 +11,10 @@ body[data-page="home"] #collection .home-categories h3{font-size:19px;line-heigh
 body[data-page="home"] #collection .home-categories .eyebrow{font-size:7px;letter-spacing:1px}
 body[data-page="home"] #collection .home-categories p{font-size:10px;line-height:1.6}
 }
+
+/* Desktop uses the full content width; paired cards are phone-only. */
+@media(min-width:621px){
+body[data-page="home"] #collection .home-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;width:100%;gap:30px}
+body[data-page="home"] #collection .home-categories>.collection-card,body[data-page="home"] #collection .home-categories>.collection-card:last-child{grid-column:auto;flex:initial;width:100%;max-width:none;min-width:0}
+body[data-page="home"] #collection .home-categories .image-wrap{aspect-ratio:4/3}
+}

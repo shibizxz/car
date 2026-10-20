@@ -14,3 +14,8 @@ body[data-page="fleet"] #categoryGrid .category-card:after{top:10px;right:10px;w
 body[data-page="fleet"] #categoryGrid .category-card:before{background:linear-gradient(180deg,#112d2210 5%,#112d2290 40%,#112d22f5 100%)}
 }
 @media(max-width:359px){body[data-page="fleet"] #categoryGrid{gap:14px 10px}body[data-page="fleet"] #categoryGrid .category-card-content{padding:12px 10px}body[data-page="fleet"] #categoryGrid .category-card-content h3{font-size:21px}}
+
+@media(min-width:621px){
+body[data-page="fleet"] #categoryGrid{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;gap:24px}
+body[data-page="fleet"] #categoryGrid>.category-card,body[data-page="fleet"] #categoryGrid>.category-card:nth-child(-n+2),body[data-page="fleet"] #categoryGrid>.category-card:last-child{grid-column:auto;min-height:350px}
+}

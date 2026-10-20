@@ -179,7 +179,7 @@ function vehicleWhatsAppUrl(name) {
 }
 
 function vehicleEnquiry(name) {
-  return `<a class="vehicle-enquiry" href="${vehicleWhatsAppUrl(name)}" target="_blank" rel="noopener noreferrer" aria-label="Enquire about ${escapeHtml(name)} on WhatsApp"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.2 8L3 21l1.5-4.8A9 9 0 1 1 21 11.5Z"/><path d="M8 7c0 4 2 6 6 7l2-2-3-1-1 1-2-2 1-1-1-2H8Z" stroke-linejoin="round"/></svg><span>Enquire on WhatsApp</span></a>`;
+  return `<button type="button" class="vehicle-enquiry" data-enquire-vehicle="${escapeHtml(name)}" data-enquire-category="${escapeHtml(categoryMeta[state.category].title)}" aria-haspopup="dialog"><span>Enquire this vehicle</span></button>`;
 }
 
 function renderImageTiles(images, vehicleName) {
@@ -193,16 +193,18 @@ function renderImageTiles(images, vehicleName) {
   }).join("");
   const enquiry = document.querySelector(".gallery-enquiry");
   if (enquiry) {
-    enquiry.href = vehicleWhatsAppUrl(vehicleName);
+    enquiry.href = "#vehicle-enquiry";
+    enquiry.dataset.enquireVehicle = vehicleName;
+    enquiry.dataset.enquireCategory = categoryMeta[state.category].title;
     enquiry.target = "_blank";
     enquiry.rel = "noopener noreferrer";
-    enquiry.textContent = `Enquire about ${vehicleName}`;
+    enquiry.textContent = "Enquire this vehicle";
   }
 }
 
 function setGalleryTitle(title, subtitle) {
   const enquiry = document.querySelector(".gallery-enquiry");
-  if (enquiry) { enquiry.href = "contact.html"; enquiry.removeAttribute("target"); enquiry.removeAttribute("rel"); enquiry.textContent = "Enquire about this collection"; }
+  if (enquiry) { delete enquiry.dataset.enquireVehicle; delete enquiry.dataset.enquireCategory; enquiry.href = "contact.html"; enquiry.removeAttribute("target"); enquiry.removeAttribute("rel"); enquiry.textContent = "Enquire about this collection"; }
   document.getElementById("galleryTitle").textContent = title;
   document.getElementById("gallerySubtitle").textContent = subtitle;
   document.getElementById("galleryTitle").focus({preventScroll: true});
@@ -235,4 +237,64 @@ function toggleGallery(show) {
 
 function escapeHtml(value) {
   return value.replaceAll("&", "&amp;").replaceAll("\"", "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+// Collect customer details locally; transmit only when the customer continues to WhatsApp.
+document.addEventListener("DOMContentLoaded", () => {
+  const dialog = document.createElement("dialog");
+  dialog.className = "vehicle-enquiry-dialog";
+  dialog.id = "vehicle-enquiry";
+  dialog.setAttribute("aria-labelledby", "vehicle-enquiry-title");
+  dialog.innerHTML = `<div class="enquiry-dialog-head"><span class="eyebrow">YOUR NEXT JOURNEY</span><button type="button" class="enquiry-close" aria-label="Close enquiry form">&times;</button></div>
+    <h2 id="vehicle-enquiry-title">Enquire this vehicle</h2><p id="enquiry-selection"></p>
+    <form id="vehicle-customer-form">
+      <label for="customer-name">Your name <span>(required)</span></label>
+      <input id="customer-name" name="customerName" autocomplete="name" maxlength="100" required placeholder="Full name">
+      <label for="customer-phone">Phone number <span>(required)</span></label>
+      <input id="customer-phone" name="customerPhone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" required placeholder="Your contact number">
+      <label for="customer-email">Email address <span>(optional)</span></label>
+      <input id="customer-email" name="customerEmail" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com">
+      <p class="enquiry-privacy">Your details, vehicle and category will be included in a WhatsApp message. You can review it before sending.</p>
+      <button class="button dark enquiry-continue" type="submit">Continue to WhatsApp</button>
+    </form>`;
+  document.body.append(dialog);
+  let selectedVehicle = "";
+  let selectedCategory = "";
+  let opener = null;
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest("[data-enquire-vehicle]");
+    if (!trigger) return;
+    event.preventDefault();
+    selectedVehicle = trigger.dataset.enquireVehicle;
+    selectedCategory = trigger.dataset.enquireCategory;
+    opener = trigger;
+    document.getElementById("enquiry-selection").textContent = `${selectedVehicle} · ${selectedCategory}`;
+    dialog.showModal();
+  });
+  dialog.querySelector(".enquiry-close").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", event => {
+    if (event.target !== dialog) return;
+    const box = dialog.getBoundingClientRect();
+    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
+  });
+  dialog.addEventListener("close", () => opener?.focus({preventScroll:true}));
+  const form = dialog.querySelector("form");
+  const nameInput = form.elements.customerName;
+  const phoneInput = form.elements.customerPhone;
+  nameInput.addEventListener("input", () => nameInput.setCustomValidity(""));
+  phoneInput.addEventListener("input", () => phoneInput.setCustomValidity(""));
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    nameInput.setCustomValidity(nameInput.value.trim() ? "" : "Please enter your name.");
+    const phone = phoneInput.value.trim();
+    const digits = phone.replace(/\D/g, "");
+    phoneInput.setCustomValidity(/^[+0-9() .-]+$/.test(phone) && digits.length >= 7 && digits.length <= 15 ? "" : "Please enter a valid phone number with 7 to 15 digits.");
+    if (!form.reportValidity()) return;
+    const message = buildCustomerEnquiry(selectedVehicle, selectedCategory, nameInput.value.trim(), phone, form.elements.customerEmail.value.trim());
+    window.open("https://wa.me/919747330992?text=" + encodeURIComponent(message), "_blank", "noopener,noreferrer");
+  });
+});
+
+function buildCustomerEnquiry(vehicle, category, name, phone, email) {
+  return ["Hello Car Castle Chengannur! I would like to enquire about this vehicle.", `Vehicle: ${vehicle}`, `Category: ${category}`, `Customer name: ${name}`, `Phone: ${phone}`, ...(email ? [`Email: ${email}`] : []), "Please share availability and pricing."].join("\n");
 }
