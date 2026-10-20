@@ -1,0 +1,13 @@
+/* Explicit 2 + 2 + 1 layout at every screen width. */
+body[data-page="home"] #collection .home-categories{display:flex;flex-flow:row wrap;justify-content:center;align-items:flex-start;gap:30px;max-width:920px;width:100%;margin:0 auto}
+body[data-page="home"] #collection .home-categories>.collection-card{display:block;flex:0 0 calc((100% - 30px)/2);width:calc((100% - 30px)/2);max-width:calc((100% - 30px)/2);min-width:0;margin:0;grid-column:auto;box-sizing:border-box}
+body[data-page="home"] #collection .home-categories .image-wrap{position:relative;width:100%;height:auto;aspect-ratio:4/3;overflow:hidden;border-radius:8px;margin-bottom:16px}
+body[data-page="home"] #collection .home-categories .image-wrap img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+@media(max-width:620px){
+body[data-page="home"] #collection .home-categories{gap:24px 14px}
+body[data-page="home"] #collection .home-categories>.collection-card{flex-basis:calc((100% - 14px)/2);width:calc((100% - 14px)/2);max-width:calc((100% - 14px)/2)}
+body[data-page="home"] #collection .home-categories .image-wrap{margin-bottom:12px;border-radius:7px}
+body[data-page="home"] #collection .home-categories h3{font-size:19px;line-height:1.2;letter-spacing:-.5px;margin:9px 0}
+body[data-page="home"] #collection .home-categories .eyebrow{font-size:7px;letter-spacing:1px}
+body[data-page="home"] #collection .home-categories p{font-size:10px;line-height:1.6}
+}

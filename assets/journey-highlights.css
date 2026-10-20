@@ -1,0 +1,19 @@
+/* Consistent information cells, independent of the retired trust-strip rules. */
+.journey-highlights{width:100%;margin:0;background:#eeeee3;border-top:1px solid #dfe4d8;border-bottom:1px solid #dfe4d8;padding:28px 24px}
+.journey-highlights-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:1172px;margin:0 auto;align-items:stretch}
+.journey-highlight{display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;min-width:0;box-sizing:border-box;padding:8px 24px;gap:7px;border:0;border-left:1px solid #d6dacb;text-align:left}
+.journey-highlight:first-child{border-left:0;padding-left:0}
+.journey-highlight strong{display:flex;align-items:center;gap:5px;min-height:22px;font-family:'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:500;line-height:1.6;letter-spacing:0;color:#183c32;margin:0}
+.journey-highlight p{font-family:'Segoe UI',Arial,sans-serif;font-size:11px;line-height:1.7;letter-spacing:0;color:#747e6c;margin:0}
+a.journey-highlight:hover strong{color:#987c41}
+@media(max-width:620px){
+.journey-highlights{padding:0 20px}
+.journey-highlights-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
+.journey-highlight,.journey-highlight:first-child{padding:20px 14px 20px 0;gap:6px;border:0;min-height:100px}
+.journey-highlight:nth-child(even){padding-left:18px;padding-right:0;border-left:1px solid #d6dacb}
+.journey-highlight:nth-child(n+3){border-top:1px solid #d6dacb}
+.journey-highlight strong{font-size:12px;min-height:21px;line-height:1.6;flex-wrap:nowrap}
+.journey-highlight p{font-size:10px;line-height:1.7}
+.journey-highlight .direction-icon{width:12px;height:12px;min-width:12px}
+}
+@media(max-width:359px){.journey-highlights{padding:0 16px}.journey-highlight strong{font-size:11px}.journey-highlight p{font-size:9px}.journey-highlight:nth-child(even){padding-left:12px}}
