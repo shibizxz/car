@@ -250,8 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
     <form id="vehicle-customer-form">
       <label for="customer-name">Your name <span>(required)</span></label>
       <input id="customer-name" name="customerName" autocomplete="name" maxlength="100" required placeholder="Full name">
-      <label for="customer-phone">Phone number <span>(required)</span></label>
-      <input id="customer-phone" name="customerPhone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" required placeholder="Your contact number">
       <p class="enquiry-privacy">Your details, vehicle and category will be included in a WhatsApp message. You can review it before sending.</p>
       <button class="button dark enquiry-continue" type="submit">Continue to WhatsApp</button>
     </form>`;
@@ -278,21 +276,16 @@ document.addEventListener("DOMContentLoaded", () => {
   dialog.addEventListener("close", () => opener?.focus({preventScroll:true}));
   const form = dialog.querySelector("form");
   const nameInput = form.elements.customerName;
-  const phoneInput = form.elements.customerPhone;
   nameInput.addEventListener("input", () => nameInput.setCustomValidity(""));
-  phoneInput.addEventListener("input", () => phoneInput.setCustomValidity(""));
   form.addEventListener("submit", event => {
     event.preventDefault();
     nameInput.setCustomValidity(nameInput.value.trim() ? "" : "Please enter your name.");
-    const phone = phoneInput.value.trim();
-    const digits = phone.replace(/\D/g, "");
-    phoneInput.setCustomValidity(/^[+0-9() .-]+$/.test(phone) && digits.length >= 7 && digits.length <= 15 ? "" : "Please enter a valid phone number with 7 to 15 digits.");
     if (!form.reportValidity()) return;
-    const message = buildCustomerEnquiry(selectedVehicle, selectedCategory, nameInput.value.trim(), phone);
+    const message = buildCustomerEnquiry(selectedVehicle, selectedCategory, nameInput.value.trim());
     window.open("https://wa.me/919747330992?text=" + encodeURIComponent(message), "_blank", "noopener,noreferrer");
   });
 });
 
-function buildCustomerEnquiry(vehicle, category, name, phone) {
-  return ["Hello Car Castle Chengannur! I would like to enquire about this vehicle.", `Vehicle: ${vehicle}`, `Category: ${category}`, `Customer name: ${name}`, `Phone: ${phone}`, "Please share availability and pricing."].join("\n");
+function buildCustomerEnquiry(vehicle, category, name) {
+  return ["Hello Car Castle Chengannur! I would like to enquire about this vehicle.", `Vehicle: ${vehicle}`, `Category: ${category}`, `Customer name: ${name}`, "Please share availability and pricing."].join("\n");
 }
